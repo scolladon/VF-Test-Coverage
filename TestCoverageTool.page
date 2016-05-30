@@ -1,0 +1,619 @@
+<apex:page docType="html-5.0" standardStylesheets="false" showheader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" cache="true">
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+      <meta charset="UTF-8">
+      </meta>
+      <title>Salesforce Test Coverage</title>
+      <style>
+        .pace {
+        -webkit-pointer-events: none;
+        pointer-events: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        }
+        .pace-inactive {
+        display: none;
+        }
+        .pace .pace-progress {
+        background: #29d;
+        position: fixed;
+        z-index: 2000;
+        top: 0;
+        right: 100%;
+        width: 100%;
+        height: 2px;
+        }
+        #wct-content {
+        opacity: 0,4;
+        }
+        body.pace-running #wct-content {
+        opacity: 0.4;
+        }
+        body.pace-done #wct-content {
+        -webkit-transition: opacity 1.3s ease;
+        -moz-transition: opacity 1.3s ease;
+        -o-transition: opacity 1.3s ease;
+        -ms-transition: opacity 1.3s ease;
+        transition: opacity 1.3s ease;
+        }
+        .glyphicon-refresh-animate {
+          -animation: spin .7s infinite linear;
+          -webkit-animation: spin2 .7s infinite linear;
+        }
+
+        @-webkit-keyframes spin2 {
+          from { -webkit-transform: rotate(0deg);}
+          to { -webkit-transform: rotate(360deg);}
+        }
+
+        @keyframes spin {
+          from { transform: scale(1) rotate(0deg);}
+          to { transform: scale(1) rotate(360deg);}
+        }
+      </style>
+      <apex:stylesheet value="{!URLFOR($Resource.slds103, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+
+      <script data-pace-options='{"restartOnRequestAfter": false, "restartOnPushState": false }'  src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-table/0.3.3/ng-table.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jsforce/1.5.0/jsforce.min.js" async="async"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" async="async"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" async="async"></script>
+      <script data-run-script="">
+        var data = [];
+        var app = angular.module("angularTable", ['ngTable']);
+
+        app.controller("ctrlRead", function($scope, ngTableParams){
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 100           // count per page
+          }, {
+                total: data.length, // length of data
+                getData: function ($defer, params) {
+                    params.total(data.length);
+                    $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+            }
+        });
+        $scope.displayTable = function() {
+            $scope.tableData = data;
+            $scope.tableParams.total($scope.tableData.length);
+            $scope.tableParams.reload();
+          };
+        });
+            ///END ANGULAR///
+      </script>
+    </head>
+    <body>
+      <div id="loading" class="slds-spinner_container" display="none">
+        <div class="slds-spinner slds-spinner--large" aria-hidden="false" role="alert">
+          <div class="slds-spinner__dot-a"></div>
+          <div class="slds-spinner__dot-b"></div>
+        </div>
+      </div>
+      <div id="wct-content" ng-app="angularTable" class="slds">
+        <div class="slds-page-header" role="banner">
+          <div class="slds-media">
+            <div class="slds-media__figure">
+              <svg aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-solution">
+                <use xlink:href="{!URLFOR($Resource.slds103, 'assets/icons/standard-sprite/svg/symbols.svg#solution')}" ></use>
+              </svg>
+            </div>
+            <div class="slds-media__body">
+              <p class="slds-text-heading--label">Test Coverage module</p>
+              <div class="slds-grid">
+                <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle" title="Salesforce Online Test Coverage tool.">Salesforce Online Test Coverage tool.</h1>
+                <div class="slds-col slds-shrink-none">
+                  <button class="slds-button slds-button--neutral slds-text-selected" aria-live="assertive" id="reset-coverage">
+                    <span class="slds-text-selected">
+                      <svg aria-hidden="true" class="slds-button__icon--stateful slds-button__icon--left">
+                        <use xlink:href="{!URLFOR($Resource.slds103, 'assets/icons/utility-sprite/svg/symbols.svg#check')}"></use>
+                      </svg>Reset Coverage</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-align-middle">
+          <ul class="timeline">
+          </ul>
+        </div>
+        <div class="slds-grid slds-wrap slds-grid--pull-padded">
+          <div class="slds-col--padded  slds-size--1-of-1 slds-container--center slds-container--small">
+            <canvas id="myChart" width="200" height="200"></canvas>
+            <h4>Global Coverage</h4>
+            <span class="text-muted">Keep up the good work...</span>
+          </div>
+          <div class="slds-col--padded  slds-size--1-of-1" id="CovTable" ng-controller="ctrlRead">
+            <table class="slds-table slds-table--bordered" ng-table="tableParams">
+              <thead>
+                <tr class="slds-text-heading--label">
+                  <th class="slds-is-sortable slds-is-resizable" scope="col">
+                    <div class="slds-truncate">Class Name</div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable" scope="col">
+                    <div class="slds-truncate">Coverage</div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable" scope="col">
+                    <div class="slds-truncate"># Line Covered</div>
+                  </th>
+                  <th class="slds-is-sortable slds-is-resizable" scope="col">
+                    <div class="slds-truncate"># Line Uncovered</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="user in $data">
+                  <th class="slds-truncate" scope="row" data-label="Class Name">{{user.ApexClassOrTriggerName}}</th>
+                  <td class="" data-label="Coverage">{{user.Coverage}} %</td>
+                  <td class="" data-label="# Line Covered">{{user.NumLinesCovered}}</td>
+                  <td class="" data-label="# Line Uncovered">{{user.NumLinesUncovered}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--- Javascript -->
+      <script data-run-script="">
+
+        window.onload = function(){
+          jQuery.noConflict();
+          var conn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}', proxyUrl: '/services/proxy',maxRequest : '10000'});
+          conn.metadata.pollTimeout= 240000;
+          var testClasses = [];
+
+          var handleError = function(err){
+            jQuery('#error-connect').text(err);
+            jQuery('#info-connect').text('');
+            jQuery('#info-connect').hide();
+            jQuery('#error-connect').show();
+            enableButton();
+          }
+
+          var handleSuccess = function(){
+            jQuery('#error-connect').text('');
+            jQuery('#info-connect').text('');
+            jQuery('#info-connect').hide();
+            jQuery('#error-connect').hide();
+            enableButton();
+          }
+
+          var enableButton = function(){
+            jQuery('#loading').hide();
+            jQuery('#reset-coverage').removeAttr('disabled');
+          }
+
+          var createTimelineElement = function(content) {
+            var frag = document.createDocumentFragment();
+            var ul = document.getElementsByClassName('timeline')[0];
+            var li = document.createElement('li');
+            li.className = 'slds-timeline__item';
+            var div1 = document.createElement('div');
+            div1.className = 'slds-media';
+            var div2 = document.createElement('div');
+            div2.className = 'slds-media__body';
+            var div3 = document.createElement('div');
+            div3.className = 'slds-media slds-media--timeline slds-timeline__media--task';
+            var div4 = document.createElement('div');
+            div4.className = 'slds-media__figure';
+            var svg = document.createElement('svg');
+            svg.className = 'slds-icon slds-icon-standard-task slds-timeline__icon';
+            svg.setAttribute('aria-hidden',true);
+            var use = document.createElement('use');
+            use.className = 'slds-icon slds-icon-standard-task slds-timeline__icon';
+            use.setAttribute('xlink:href',"{!URLFOR($Resource.slds103, '/assets/icons/standard-sprite/svg/symbols.svg#task')}");
+            var div11 = document.createElement('div');
+            div11.className = 'slds-media__body';
+            var div21 = document.createElement('div');
+            div21.className = 'slds-media slds-tile slds-media--small';
+            var div31 = document.createElement('div');
+            div31.className = 'slds-media__body';
+            var p = document.createElement('p');
+            p.className = 'slds-tile__title slds-truncate';
+            p.innerText = content;
+            div31.appendChild(p);
+            div21.appendChild(div31);
+            div11.appendChild(div21);
+            svg.appendChild(use);
+            div4.appendChild(svg);
+            div3.appendChild(div4);
+            div3.appendChild(div11);
+            div2.appendChild(div3);
+            div1.appendChild(div2);
+            li.appendChild(div1);
+            frag.appendChild(li);
+            ul.appendChild(frag);
+
+            jQuery(".timeline").html(jQuery(".timeline").html());
+          }
+
+
+          var sortClassPriority = function(a, b) {
+          return a.Priority > b.Priority ? -1 : a.Priority < b.Priority ? 1 : 0;
+          }
+
+          var calculatePriority = function(numLinesCov, numLinesUncov) {
+          return numLinesUncov*(1 + 0.7-(numLinesCov/(numLinesCov+numLinesUncov)));
+          }
+
+          var calculateCov = function(numLinesCov, numLinesUncov) {
+          return numLinesCov+numLinesUncov != 0 ? ((numLinesCov*100)/(numLinesCov+numLinesUncov)).toFixed(2) : 0.00;
+          }
+
+          var calculateGlobalCoverage = function(data){
+          var numlinesUncovered = 0;
+          var numLinesCovered = 0;
+          for(var i=0; i<data.length; i++) {
+            numlinesUncovered += data[i].NumLinesUncovered;
+            numLinesCovered += data[i].NumLinesCovered;
+          }
+          return calculateCov(numLinesCovered, numlinesUncovered);
+          }
+
+          var changeCoverageColor = function(orgCov) {
+          var className = (orgCov < 60)
+            ? 'bg-danger' // Red
+            : (orgCov >= 60 && orgCov < 75)
+              ? 'bg-warning' // Yellow
+              : 'bg-success'; // Green
+          jQuery('#info')[0].className = jQuery('#info')[0].className.replace(/\bbg.*?\b/g, '');
+          jQuery('#info').addClass(className);
+          }
+
+          // START DELETE CODE COVERAGE
+
+          var deleteTestResult = function(){
+            createTimelineElement('Delete ApexTestResult')
+            return new Promise(function(resolve,reject){
+              window.open("/07M?ClearAllData=1", "_blank");
+              jQuery(".timeline").html(jQuery(".timeline").html());
+              resolve();
+            })
+          }
+
+          var selectApexCodeCoverage = function() {
+            createTimelineElement('Fetching ApexCodeCoverage')
+            return new Promise(function(resolve,reject){
+              conn.tooling.query('select id from ApexCodeCoverage'
+            , function(error, result) {
+                if(error) {
+                  reject(error);
+                  return;
+                }
+                var ids = [];
+                for(var i in result.records) {
+                  ids.push(result.records[i].Id);
+                }
+                //deleteApexCodeCoverage
+                resolve(ids);
+              });
+            });
+          }
+
+          var deleteApexCodeCoverage = function(ids) {
+            createTimelineElement('Deleting ApexCodeCoverage')
+            return new Promise(function(resolve,reject){
+              if(ids.length > 0) {
+                conn.tooling.sobject('ApexCodeCoverage').delete(ids
+                  , function(error, result) {
+                  if(error) {
+                    reject(error);
+                    return;
+                  }
+                  resolve();
+                  return;
+                  //deleteApexCodeCoverageAggregate();
+                });
+              } else {
+                resolve();
+              }
+            });
+          }
+
+
+          var selectApexCodeCoverageAggregate = function() {
+            createTimelineElement('Fetching ApexCodeCoverageAggregate')
+            return new Promise(function(resolve,reject){
+              conn.tooling.query('select id from ApexCodeCoverageAggregate'
+            , function(error, result) {
+                if(error) {
+                  reject(error);
+                  return;
+                }
+                var ids = [];
+                for(var i in result.records) {
+                  ids.push(result.records[i].Id);
+                }
+                resolve(ids);
+                //deleteApexCodeCoverageAggregate
+              });
+            });
+          }
+
+          var deleteApexCodeCoverageAggregate = function(ids) {
+            createTimelineElement('Deleting ApexCodeCoverageAggregate')
+            return new Promise(function(resolve,reject){
+              if(ids.length > 0) {
+                conn.tooling.sobject('ApexCodeCoverageAggregate').delete(ids
+                  , function(error, result) {
+                  if(error) {
+                    reject(error);
+                    return;
+                  }
+                  resolve();
+                  //createContainer();
+                });
+              } else {
+                resolve();
+              }
+            })
+          }
+
+          ////////START METHOD COMPILE CLASSES////////
+          var createContainer = function() {
+            createTimelineElement('Create MetaDataContainer')
+            return new Promise(function(resolve,reject){
+              conn.tooling.sobject('MetadataContainer').create({name:'AwsomeMDC'+new Date().getTime()}, function(err, result){
+                if(err){
+                  reject(err);
+                  return;
+                }
+                resolve(result.id);
+                //getClassNames(createApexClassMember);
+              });
+            })
+          }
+
+          ///Get Class Names///
+          var getClassNames = function() {
+            createTimelineElement('Get Classes')
+            return new Promise(function(resolve,reject){
+              var MetadataArray = [];
+              conn.tooling.query("select id, Name, Body from ApexClass WHERE NamespacePrefix = null")
+              .on("record", function(result){
+                MetadataArray.push(result);
+              })
+              .on("end", function(query){
+                testClasses = MetadataArray.filter(function(el) {
+                    return el.Name.toLowerCase().includes('test');
+                });
+                resolve({'classNames' : MetadataArray});
+              })
+              .on("error",function(err){reject(err);})
+              .run({autoFetch : true, maxFetch : 1000 });
+            });
+
+          }
+
+          //Create member
+          var createApexClassMember = function(options) {
+            createTimelineElement('Create ApexClassMembers')
+            return new Promise(function(resolve,reject){
+              var apexClassMemberArray = options[4].classNames.map(function(meta) {
+                return {Body: meta.Body,
+                        MetadataContainerId: options[3],
+                        ContentEntityId: meta.Id};
+              });
+              if(apexClassMemberArray.length > 0){
+                conn.tooling.sobject('ApexClassMember').create(
+                  apexClassMemberArray, function(err, result) {
+                    if(err) {
+                      reject(err);
+                      return;
+                    }
+                    resolve(options[3]);
+                  //createContainerAsyncRequest(containerId);
+                });
+              } else {
+                resolve(options[3])
+              }
+            });
+          }
+
+
+          var createContainerAsyncRequest = function(containerId) {
+            createTimelineElement('Create Compilation Request')
+            return new Promise(function(resolve,reject){
+              conn.tooling.sobject('ContainerAsyncRequest').create({
+                IsCheckOnly: true,
+                MetadataContainerId: containerId,
+                IsRunTests:false // Improve here ?
+                }, function(err, res) {
+                if(err) {
+                  reject(err);
+                  return;
+                }
+                resolve({"containerId":containerId,"id":res.id});
+                //pollContainer(containerId, res.id);
+              });
+            })
+
+          }
+
+          var getAsyncRequest = function(options) {
+            createTimelineElement('Get Compilation Status')
+            return new Promise(function(resolve,reject){
+              (function pollAsyncRequestStatus(){
+                var fields;
+
+                fields = ['Id', 'MetadataContainerId', 'MetadataContainerMemberId', 'State', 'IsCheckOnly', 'DeployDetails', 'ErrorMsg'];
+                conn.tooling.sobject('ContainerAsyncRequest')
+                .find(
+                  { Id: options.id },
+                  fields
+                )
+                .execute(function(err, results) {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  if (results[0].State !== 'Queued') {
+                    resolve(options.containerId);
+                  } else {
+                    setTimeout(pollAsyncRequestStatus, 1000);
+                  }
+                });
+              })();
+            })
+
+          }
+
+          var deleteContainer = function(containerId) {
+            createTimelineElement('Delete Container')
+            return new Promise(function(resolve,reject){
+              // Put the name here
+              if(containerId){
+                conn.tooling.sobject('MetadataContainer').delete(containerId, function(err, res) {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+              } else {
+                resolve();
+              }
+            })
+          }
+
+          ///Get IDs of the testClasses and runs the tests. Then refresh angular controller to display the results.
+          var runTests = function() {
+            createTimelineElement('Run Tests')
+            return new Promise(function(resolve,reject){
+              var classIDs = testClasses.map(function(record){
+                return record.Id;
+              });
+              if(classIDs.length > 0){
+                conn.tooling.runTestsAsynchronous(classIDs,function(error,result){
+                  if(error) {
+                    reject(error);
+                    return;
+                  }
+                  resolve(result);
+                });
+              } else {
+                resolve();
+              }
+            })
+          }
+
+          var getAsyncTestStatus = function(ParentJobId){
+            createTimelineElement('Get AsyncTestStatus')
+            return new Promise(function(resolve,reject){
+              if(ParentJobId) {
+                (function pollAsyncTestStatus(){
+                  conn.tooling.query("select Id, Status, ApexClassId FROM ApexTestQueueItem where ParentJobId = '" + ParentJobId + "'", function(error, result) {
+                    if(error) {
+                      reject(error);
+                      return;
+                    }
+                    var PollAgain = false;
+
+                    for(var i in result.records) {
+                      if(result.records[i].Status !== 'Completed'){
+                        PollAgain = true;
+                        break;
+                      }
+                    }
+                    if(PollAgain) {
+                      setTimeout(pollAsyncTestStatus, 1000);
+                    } else {
+                      resolve(result);
+                    }
+                  });
+                })();
+              } else {
+                resolve();
+              }
+            })
+          }
+          ////////END METHOD COMPILE CLASSES////////
+
+          ////////START METHOD COVERAGE PREDICTION CLASSES////////
+
+          //******** works for new apex classes ********//
+          // var predictedCoverage = function(totalLinesProd, totalLinesCoveredProd, totalLinesPackaged, totalLinesCoveredPackaged) {
+          //   return ((totalLinesCoveredProd + totalLinesCoveredPackaged) / (totalLinesProd + totalLinesPackaged)) * 100;
+          // }
+          ////////END METHOD COVERAGE PREDICTION CLASSES////////
+
+          ////////START METHOD GLOBAL COVERAGE CHART////////
+          var retrieveCoverage = function(){
+            return new Promise(function(resolve,reject){
+              conn.tooling.query("SELECT NumLinesCovered, NumLinesUncovered, ApexClassOrTrigger.Name FROM ApexCodeCoverageAggregate WHERE ApexClassOrTrigger.Name != 'MetadataService' AND ApexClassOrTrigger.Name != 'Chathon'" , function(error, result) {
+                if (error) {
+                  reject(error);
+                  return;
+                }
+                data = [];
+                for(var index in result.records) {
+                  var coverage = result.records[index];
+                  data.push({'ApexClassOrTriggerName' : coverage.ApexClassOrTrigger.Name,
+                    'NumLinesCovered' : coverage.NumLinesCovered,
+                    'NumLinesUncovered' : coverage.NumLinesUncovered,
+                    'Coverage' : calculateCov(coverage.NumLinesCovered,coverage.NumLinesUncovered),
+                    'Priority' : calculatePriority(coverage.NumLinesCovered,coverage.NumLinesUncovered)});
+                }
+                data.sort(sortClassPriority);
+                resolve(calculateGlobalCoverage(data));
+              });
+            })
+          }
+
+
+          var buildChart = function(orgCoverage) {
+            return new Promise(function(resolve,reject){
+              var ctx = document.getElementById("myChart").getContext("2d");
+              var data = [{value: orgCoverage,
+                  color:"#46BFBD",
+                  highlight: "#FF5A5E",
+                  label: "Coverage Done"
+              },
+              {
+                  value: 100 - orgCoverage,
+                  color: "#F7464A",
+                  highlight: "#5AD3D1",
+                  label: "Coverage missing"
+              }];
+              var myDoughnutChart = new Chart(ctx).Doughnut(data);
+              angular.element(document.getElementById('CovTable')).scope().displayTable();
+              resolve();
+            })
+          }
+
+          retrieveCoverage()
+          .then(buildChart)
+          .then(handleSuccess)
+          .catch(handleError);
+
+
+          jQuery('#reset-coverage').click(function() {
+            jQuery('#loading').show();
+            jQuery('#reset-coverage').prop('disabled', 'disabled');
+            Promise.all([deleteTestResult(),selectApexCodeCoverage().then(deleteApexCodeCoverage),selectApexCodeCoverageAggregate().then(deleteApexCodeCoverageAggregate),createContainer(),getClassNames()])
+            .then(createApexClassMember)
+            .then(createContainerAsyncRequest)
+            .then(getAsyncRequest)
+            .then(function(containerId){return Promise.all([runTests().then(getAsyncTestStatus),deleteContainer(containerId)])})
+            .then(retrieveCoverage)
+            .then(buildChart)
+            .then(handleSuccess)
+            .catch(handleError);
+          });
+        }
+
+        // TODO Filter & sorting table => Use react
+        // TODO Promise in parallel => Done
+        // TODO modulify
+        // TODO lasy loading Headjs ?
+        // TODO Display Checklist with explanation
+        // TODO SLDS Spinner + TimeLine + Process + Header + Publisher
+        // Minification
+
+        ////////END METHOD GLOBAL COVERAGE CHART////////
+      </script>
+    </body>
+  </html>
+</apex:page>
