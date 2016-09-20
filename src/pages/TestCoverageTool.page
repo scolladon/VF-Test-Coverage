@@ -96,7 +96,7 @@
           <div class="slds-media">
             <div class="slds-media__figure">
               <svg aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-solution">
-                <use xlink:href="{!URLFOR($Resource.slds202, 'assets/icons/standard-sprite/svg/symbols.svg#solution')}" ></use>
+                <use xlink:href="{!URLFOR($Resource.slds105, 'assets/icons/standard-sprite/svg/symbols.svg#solution')}" ></use>
               </svg>
             </div>
             <div class="slds-media__body">
@@ -107,7 +107,7 @@
                   <button class="slds-button slds-button--neutral slds-text-selected" aria-live="assertive" id="reset-coverage">
                     <span class="slds-text-selected">
                       <svg aria-hidden="true" class="slds-button__icon--stateful slds-button__icon--left">
-                        <use xlink:href="{!URLFOR($Resource.slds202, 'assets/icons/utility-sprite/svg/symbols.svg#check')}"></use>
+                        <use xlink:href="{!URLFOR($Resource.slds105, 'assets/icons/utility-sprite/svg/symbols.svg#check')}"></use>
                       </svg>Reset Coverage</span>
                   </button>
                 </div>
@@ -203,7 +203,7 @@
             svg.setAttribute('aria-hidden',true);
             var use = document.createElement('use');
             use.className = 'slds-icon slds-icon-standard-task slds-timeline__icon';
-            use.setAttribute('xlink:href',"{!URLFOR($Resource.slds202, '/assets/icons/standard-sprite/svg/symbols.svg#task')}");
+            use.setAttribute('xlink:href',"{!URLFOR($Resource.slds105, '/assets/icons/standard-sprite/svg/symbols.svg#task')}");
             var div11 = document.createElement('div');
             div11.className = 'slds-media__body';
             var div21 = document.createElement('div');
