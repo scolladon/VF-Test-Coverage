@@ -4,9 +4,5 @@
         <members>TestCoverageTool</members>
         <name>ApexPage</name>
     </types>
-    <types>
-        <members>SLDS105</members>
-        <name>StaticResource</name>
-    </types>
-    <version>37.0</version>
+    <version>40.0</version>
 </Package>
