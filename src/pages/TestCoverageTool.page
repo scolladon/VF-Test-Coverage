@@ -1,5 +1,6 @@
 <apex:page docType="html-5.0" standardStylesheets="false" showheader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" cache="true">
   <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <apex:slds />
     <head>
       <meta charset="UTF-8">
       </meta>
@@ -41,19 +42,19 @@
           -animation: spin .7s infinite linear;
           -webkit-animation: spin2 .7s infinite linear;
         }
-
+ 
         @-webkit-keyframes spin2 {
           from { -webkit-transform: rotate(0deg);}
           to { -webkit-transform: rotate(360deg);}
         }
-
+ 
         @keyframes spin {
           from { transform: scale(1) rotate(0deg);}
           to { transform: scale(1) rotate(360deg);}
         }
       </style>
-      <apex:stylesheet value="{!URLFOR($Resource.SLDS105, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
-
+      <apex:stylesheet value="{!URLFOR($Asset.SLDS, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+ 
       <script data-pace-options='{"restartOnRequestAfter": false, "restartOnPushState": false }'  src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-table/0.3.3/ng-table.min.js"></script>
@@ -63,7 +64,7 @@
       <script data-run-script="">
         var data = [];
         var app = angular.module("angularTable", ['ngTable']);
-
+ 
         app.controller("ctrlRead", function($scope, ngTableParams){
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
@@ -91,12 +92,12 @@
           <div class="slds-spinner__dot-b"></div>
         </div>
       </div>
-      <div id="wct-content" ng-app="angularTable" class="slds">
+      <div id="wct-content" ng-app="angularTable" class="slds-scope">
         <div class="slds-page-header" role="banner">
           <div class="slds-media">
             <div class="slds-media__figure">
               <svg aria-hidden="true" class="slds-icon slds-icon--large slds-icon-standard-solution">
-                <use xlink:href="{!URLFOR($Resource.slds105, 'assets/icons/standard-sprite/svg/symbols.svg#solution')}" ></use>
+                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#solution')}" ></use>
               </svg>
             </div>
             <div class="slds-media__body">
@@ -107,7 +108,7 @@
                   <button class="slds-button slds-button--neutral slds-text-selected" aria-live="assertive" id="reset-coverage">
                     <span class="slds-text-selected">
                       <svg aria-hidden="true" class="slds-button__icon--stateful slds-button__icon--left">
-                        <use xlink:href="{!URLFOR($Resource.slds105, 'assets/icons/utility-sprite/svg/symbols.svg#check')}"></use>
+                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}"></use>
                       </svg>Reset Coverage</span>
                   </button>
                 </div>
@@ -157,13 +158,13 @@
       </div>
       <!--- Javascript -->
       <script data-run-script="">
-
+ 
         window.onload = function(){
           jQuery.noConflict();
           var conn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}', proxyUrl: '/services/proxy',maxRequest : '10000'});
           conn.metadata.pollTimeout= 240000;
           var testClasses = [];
-
+ 
           var handleError = function(err){
             jQuery('#error-connect').text(err);
             jQuery('#info-connect').text('');
@@ -171,7 +172,7 @@
             jQuery('#error-connect').show();
             enableButton();
           }
-
+ 
           var handleSuccess = function(){
             jQuery('#error-connect').text('');
             jQuery('#info-connect').text('');
@@ -179,12 +180,12 @@
             jQuery('#error-connect').hide();
             enableButton();
           }
-
+ 
           var enableButton = function(){
             jQuery('#loading').hide();
             jQuery('#reset-coverage').removeAttr('disabled');
           }
-
+ 
           var createTimelineElement = function(content) {
             var frag = document.createDocumentFragment();
             var ul = document.getElementsByClassName('timeline')[0];
@@ -203,7 +204,7 @@
             svg.setAttribute('aria-hidden',true);
             var use = document.createElement('use');
             use.className = 'slds-icon slds-icon-standard-task slds-timeline__icon';
-            use.setAttribute('xlink:href',"{!URLFOR($Resource.slds105, '/assets/icons/standard-sprite/svg/symbols.svg#task')}");
+            use.setAttribute('xlink:href',"{!URLFOR($Asset.SLDS, '/assets/icons/standard-sprite/svg/symbols.svg#task')}");
             var div11 = document.createElement('div');
             div11.className = 'slds-media__body';
             var div21 = document.createElement('div');
@@ -225,23 +226,23 @@
             li.appendChild(div1);
             frag.appendChild(li);
             ul.appendChild(frag);
-
+ 
             jQuery(".timeline").html(jQuery(".timeline").html());
           }
-
-
+ 
+ 
           var sortClassPriority = function(a, b) {
           return a.Priority > b.Priority ? -1 : a.Priority < b.Priority ? 1 : 0;
           }
-
+ 
           var calculatePriority = function(numLinesCov, numLinesUncov) {
           return numLinesUncov*(1 + 0.7-(numLinesCov/(numLinesCov+numLinesUncov)));
           }
-
+ 
           var calculateCov = function(numLinesCov, numLinesUncov) {
           return numLinesCov+numLinesUncov != 0 ? ((numLinesCov*100)/(numLinesCov+numLinesUncov)).toFixed(2) : 0.00;
           }
-
+ 
           var calculateGlobalCoverage = function(data){
           var numlinesUncovered = 0;
           var numLinesCovered = 0;
@@ -251,7 +252,7 @@
           }
           return calculateCov(numLinesCovered, numlinesUncovered);
           }
-
+ 
           var changeCoverageColor = function(orgCov) {
           var className = (orgCov < 60)
             ? 'bg-danger' // Red
@@ -261,9 +262,9 @@
           jQuery('#info')[0].className = jQuery('#info')[0].className.replace(/\bbg.*?\b/g, '');
           jQuery('#info').addClass(className);
           }
-
+ 
           // START DELETE CODE COVERAGE
-
+ 
           var deleteTestResult = function(){
             createTimelineElement('Delete ApexTestResult')
             return new Promise(function(resolve,reject){
@@ -272,7 +273,7 @@
               resolve();
             })
           }
-
+ 
           var selectApexCodeCoverage = function() {
             createTimelineElement('Fetching ApexCodeCoverage')
             return new Promise(function(resolve,reject){
@@ -291,7 +292,7 @@
               });
             });
           }
-
+ 
           var deleteApexCodeCoverage = function(ids) {
             createTimelineElement('Deleting ApexCodeCoverage')
             return new Promise(function(resolve,reject){
@@ -311,8 +312,8 @@
               }
             });
           }
-
-
+ 
+ 
           var selectApexCodeCoverageAggregate = function() {
             createTimelineElement('Fetching ApexCodeCoverageAggregate')
             return new Promise(function(resolve,reject){
@@ -331,7 +332,7 @@
               });
             });
           }
-
+ 
           var deleteApexCodeCoverageAggregate = function(ids) {
             createTimelineElement('Deleting ApexCodeCoverageAggregate')
             return new Promise(function(resolve,reject){
@@ -350,7 +351,7 @@
               }
             })
           }
-
+ 
           ////////START METHOD COMPILE CLASSES////////
           var createContainer = function() {
             createTimelineElement('Create MetaDataContainer')
@@ -365,7 +366,7 @@
               });
             })
           }
-
+ 
           ///Get Class Names///
           var getClassNames = function() {
             createTimelineElement('Get Classes')
@@ -384,9 +385,9 @@
               .on("error",function(err){reject(err);})
               .run({autoFetch : true, maxFetch : 1000 });
             });
-
+ 
           }
-
+ 
           //Create member
           var createApexClassMember = function(options) {
             createTimelineElement('Create ApexClassMembers')
@@ -411,8 +412,8 @@
               }
             });
           }
-
-
+ 
+ 
           var createContainerAsyncRequest = function(containerId) {
             createTimelineElement('Create Compilation Request')
             return new Promise(function(resolve,reject){
@@ -429,15 +430,15 @@
                 //pollContainer(containerId, res.id);
               });
             })
-
+ 
           }
-
+ 
           var getAsyncRequest = function(options) {
             createTimelineElement('Get Compilation Status')
             return new Promise(function(resolve,reject){
               (function pollAsyncRequestStatus(){
                 var fields;
-
+ 
                 fields = ['Id', 'MetadataContainerId', 'MetadataContainerMemberId', 'State', 'IsCheckOnly', 'DeployDetails', 'ErrorMsg'];
                 conn.tooling.sobject('ContainerAsyncRequest')
                 .find(
@@ -457,9 +458,9 @@
                 });
               })();
             })
-
+ 
           }
-
+ 
           var deleteContainer = function(containerId) {
             createTimelineElement('Delete Container')
             return new Promise(function(resolve,reject){
@@ -477,7 +478,7 @@
               }
             })
           }
-
+ 
           ///Get IDs of the testClasses and runs the tests. Then refresh angular controller to display the results.
           var runTests = function() {
             createTimelineElement('Run Tests')
@@ -498,7 +499,7 @@
               }
             })
           }
-
+ 
           var getAsyncTestStatus = function(ParentJobId){
             createTimelineElement('Get AsyncTestStatus')
             return new Promise(function(resolve,reject){
@@ -510,7 +511,7 @@
                       return;
                     }
                     var PollAgain = false;
-
+ 
                     for(var i in result.records) {
                       if(result.records[i].Status !== 'Completed'){
                         PollAgain = true;
@@ -530,15 +531,15 @@
             })
           }
           ////////END METHOD COMPILE CLASSES////////
-
+ 
           ////////START METHOD COVERAGE PREDICTION CLASSES////////
-
+ 
           //******** works for new apex classes ********//
           // var predictedCoverage = function(totalLinesProd, totalLinesCoveredProd, totalLinesPackaged, totalLinesCoveredPackaged) {
           //   return ((totalLinesCoveredProd + totalLinesCoveredPackaged) / (totalLinesProd + totalLinesPackaged)) * 100;
           // }
           ////////END METHOD COVERAGE PREDICTION CLASSES////////
-
+ 
           ////////START METHOD GLOBAL COVERAGE CHART////////
           var retrieveCoverage = function(){
             return new Promise(function(resolve,reject){
@@ -553,7 +554,7 @@
                   data.push({'ApexClassOrTriggerName' : coverage.ApexClassOrTrigger.Name,
                     'NumLinesCovered' : coverage.NumLinesCovered,
                     'NumLinesUncovered' : coverage.NumLinesUncovered,
-                    'Coverage' : calculateCov(coverage.NumLinesCovered,coverage.NumLinesUncovered),
+                   'Coverage' : calculateCov(coverage.NumLinesCovered,coverage.NumLinesUncovered),
                     'Priority' : calculatePriority(coverage.NumLinesCovered,coverage.NumLinesUncovered)});
                 }
                 data.sort(sortClassPriority);
@@ -561,20 +562,20 @@
               });
             })
           }
-
-
+ 
+ 
           var buildChart = function(orgCoverage) {
             return new Promise(function(resolve,reject){
               var ctx = document.getElementById("myChart").getContext("2d");
               var data = [{value: orgCoverage,
                   color:"#46BFBD",
-                  highlight: "#FF5A5E",
+                  highlight: "#5AD3D1",
                   label: "Coverage Done"
               },
               {
                   value: 100 - orgCoverage,
                   color: "#F7464A",
-                  highlight: "#5AD3D1",
+                  highlight: "#FF5A5E",
                   label: "Coverage missing"
               }];
               var myDoughnutChart = new Chart(ctx).Doughnut(data);
@@ -582,13 +583,13 @@
               resolve();
             })
           }
-
+ 
           retrieveCoverage()
           .then(buildChart)
           .then(handleSuccess)
           .catch(handleError);
-
-
+ 
+ 
           jQuery('#reset-coverage').click(function() {
             jQuery('#loading').show();
             jQuery('#reset-coverage').prop('disabled', 'disabled');
@@ -603,7 +604,7 @@
             .catch(handleError);
           });
         }
-
+ 
         // TODO Filter & sorting table => Use react
         // TODO Promise in parallel => Done
         // TODO modulify
@@ -611,7 +612,7 @@
         // TODO Display Checklist with explanation
         // TODO SLDS Spinner + TimeLine + Process + Header + Publisher
         // Minification
-
+ 
         ////////END METHOD GLOBAL COVERAGE CHART////////
       </script>
     </body>
