@@ -6,6 +6,9 @@
       </meta>
       <title>Salesforce Test Coverage</title>
       <style>
+          .timeline{
+          	margin-top : 1rem;
+          }
         .pace {
         -webkit-pointer-events: none;
         pointer-events: none;
@@ -52,12 +55,207 @@
           from { transform: scale(1) rotate(0deg);}
           to { transform: scale(1) rotate(360deg);}
         }
+          /* extract from bootstrap */
+        .pull-right {
+            float: right!important;
+        }
+        .btn-group, .btn-group-vertical {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .pagination {
+            display: inline-block;
+            padding-left: 0;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .pagination>li {
+            display: inline;
+        }
+        .pagination>li:first-child>a, .pagination>li:first-child>span {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+            color: #777;
+            cursor: not-allowed;
+            background-color: #fff;
+            border-color: #ddd;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+            z-index: 2;
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+        .pagination>li>a, .pagination>li>span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .table {
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px
+        }
+        
+        .btn.active.focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn:active:focus,.btn:focus {
+            outline: thin dotted;
+            outline: 5px auto -webkit-focus-ring-color;
+            outline-offset: -2px
+        }
+        
+        .btn.focus,.btn:focus,.btn:hover {
+            color: #333;
+            text-decoration: none
+        }
+        
+        .btn.active,.btn:active {
+            background-image: none;
+            outline: 0;
+            -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+            box-shadow: inset 0 3px 5px rgba(0,0,0,.125)
+        }
+        
+        .btn.disabled,.btn[disabled],fieldset[disabled] .btn {
+            pointer-events: none;
+            cursor: not-allowed;
+            filter: alpha(opacity=65);
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            opacity: .65
+        }
+        
+        .btn-default {
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc
+        }
+        
+        .btn-default.active,.btn-default.focus,.btn-default:active,.btn-default:focus,.btn-default:hover,.open>.dropdown-toggle.btn-default {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad
+        }
+        
+        .btn-default.active,.btn-default:active,.open>.dropdown-toggle.btn-default {
+            background-image: none
+        }
+        
+        .btn-default.disabled,.btn-default.disabled.active,.btn-default.disabled.focus,.btn-default.disabled:active,.btn-default.disabled:focus,.btn-default.disabled:hover,.btn-default[disabled],.btn-default[disabled].active,.btn-default[disabled].focus,.btn-default[disabled]:active,.btn-default[disabled]:focus,.btn-default[disabled]:hover,fieldset[disabled] .btn-default,fieldset[disabled] .btn-default.active,fieldset[disabled] .btn-default.focus,fieldset[disabled] .btn-default:active,fieldset[disabled] .btn-default:focus,fieldset[disabled] .btn-default:hover {
+            background-color: #fff;
+            border-color: #ccc
+        }
+        
+        .btn-default .badge {
+            color: #fff;
+            background-color: #333
+        }
+          
+        .btn-group,.btn-group-vertical {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle
+    }
+
+        .btn-group-vertical>.btn,.btn-group>.btn {
+            position: relative;
+            float: left
+        }
+        
+        .btn-group-vertical>.btn.active,.btn-group-vertical>.btn:active,.btn-group-vertical>.btn:focus,.btn-group-vertical>.btn:hover,.btn-group>.btn.active,.btn-group>.btn:active,.btn-group>.btn:focus,.btn-group>.btn:hover {
+            z-index: 2
+        }
+        
+        .btn-group .btn+.btn,.btn-group .btn+.btn-group,.btn-group .btn-group+.btn,.btn-group .btn-group+.btn-group {
+            margin-left: -1px
+        }
+          
+        .btn-group>.btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+            border-radius: 0
+        }
+
+        .btn-group>.btn:first-child {
+            margin-left: 0
+        }
+        
+        .btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0
+        }
+        
+        .btn-group>.btn:last-child:not(:first-child),.btn-group>.dropdown-toggle:not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0
+        }
+        
+        .btn-group>.btn-group {
+            float: left
+        }
+        
+        .btn-group>.btn-group:not(:first-child):not(:last-child)>.btn {
+            border-radius: 0
+        }
+        
+        .btn-group>.btn-group:first-child:not(:last-child)>.btn:last-child,.btn-group>.btn-group:first-child:not(:last-child)>.dropdown-toggle {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0
+        }
+        
+        .btn-group>.btn-group:last-child:not(:first-child)>.btn:first-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0
+        }
+
       </style>
+      <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"></link-->
       <apex:stylesheet value="{!URLFOR($Asset.SLDS, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
  
       <script data-pace-options='{"restartOnRequestAfter": false, "restartOnPushState": false }'  src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-table/0.3.3/ng-table.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+      <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-table/0.8.3/ng-table.min.css"></link-->
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-table/0.8.3/ng-table.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jsforce/1.5.0/jsforce.min.js" async="async"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" async="async"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" async="async"></script>
@@ -65,25 +263,48 @@
         var data = [];
         var app = angular.module("angularTable", ['ngTable']);
  
-        app.controller("ctrlRead", function($scope, ngTableParams){
-        $scope.tableParams = new ngTableParams({
-            page: 1,            // show first page
-            count: 100           // count per page
-          }, {
-                total: data.length, // length of data
-                getData: function ($defer, params) {
-                    params.total(data.length);
-                    $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-            }
-        });
-        $scope.displayTable = function() {
-            $scope.tableData = data;
-            $scope.tableParams.total($scope.tableData.length);
-            $scope.tableParams.reload();
-          };
+        app.controller("ctrlRead", function($scope, $filter,ngTableParams){
+            
+            //table description
+            $scope.columns = [
+                { title: 'Class Name', field: 'ApexClassOrTriggerName', 
+                  visible: true, filter: { 'ApexClassOrTriggerName': 'text' }},
+                { title: 'Coverage', field: 'Coverage', 
+                  visible: true, filter: { 'Coverage': 'text' }},
+                { title: '# Line Covered', field: 'NumLinesCovered', 
+                  visible: true, filter: { 'NumLinesCovered': 'number' }},
+                { title: '# Line Uncovered', field: 'NumLinesUncovered', 
+                  visible: true, filter: { 'NumLinesUncovered': 'number' }},
+                { title: 'Priority', field: 'Priority', 
+                  visible: true, filter: { 'Priority': 'number' }},
+            ];
+            
+            $scope.tableParams = new ngTableParams({
+                page: 1,            // show first page
+                count: 100,         // default count per page
+                sorting : {  
+                	ApexClassOrTriggerName : 'asc'  
+                } 
+              }, {
+                  total: data.length, // length of data
+                  getData: function ($defer, params) {
+                		$scope.data = data;
+                		$scope.data = params.sorting() ? $filter('orderBy')($scope.data, params.orderBy()) : $scope.data;
+                		$scope.data = params.filter() ? $filter('filter')($scope.data, params.filter()) : $scope.data;
+                		params.total($scope.data.length);
+                        $scope.data = $scope.data.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                        console.log($scope.data)
+                		$defer.resolve($scope.data);
+                    }
+              }, );
+            
+            $scope.displayTable = function() {
+                $scope.tableParams.reload();
+            };
         });
             ///END ANGULAR///
       </script>
+
     </head>
     <body>
       <div id="loading" class="slds-spinner_container" display="none">
@@ -116,41 +337,39 @@
             </div>
           </div>
         </div>
-        <div class="slds-align-middle">
-          <ul class="timeline">
-          </ul>
-        </div>
+
         <div class="slds-grid slds-wrap slds-grid--pull-padded">
-          <div class="slds-col--padded  slds-size--1-of-1 slds-container--center slds-container--small">
+          <div class="slds-col--padded  slds-size--1-of-4 slds-container--center slds-container--small">
             <canvas id="myChart" width="200" height="200"></canvas>
             <h4>Global Coverage</h4>
             <span class="text-muted">Keep up the good work...</span>
+              <div class="slds-align-middle">
+                  <ul class="timeline">
+                  </ul>
+              </div>
           </div>
-          <div class="slds-col--padded  slds-size--1-of-1" id="CovTable" ng-controller="ctrlRead">
-            <table class="slds-table slds-table--bordered" ng-table="tableParams">
-              <thead>
-                <tr class="slds-text-heading--label">
-                  <th class="slds-is-sortable slds-is-resizable" scope="col">
-                    <div class="slds-truncate">Class Name</div>
-                  </th>
-                  <th class="slds-is-sortable slds-is-resizable" scope="col">
-                    <div class="slds-truncate">Coverage</div>
-                  </th>
-                  <th class="slds-is-sortable slds-is-resizable" scope="col">
-                    <div class="slds-truncate"># Line Covered</div>
-                  </th>
-                  <th class="slds-is-sortable slds-is-resizable" scope="col">
-                    <div class="slds-truncate"># Line Uncovered</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="user in $data">
-                  <th class="slds-truncate" scope="row" data-label="Class Name">{{user.ApexClassOrTriggerName}}</th>
-                  <td class="" data-label="Coverage">{{user.Coverage}} %</td>
-                  <td class="" data-label="# Line Covered">{{user.NumLinesCovered}}</td>
-                  <td class="" data-label="# Line Uncovered">{{user.NumLinesUncovered}}</td>
-                </tr>
+          <div class="slds-col--padded  slds-size--3-of-4" id="CovTable" ng-controller="ctrlRead">
+            <table class="slds-table slds-table--bordered table" ng-table="tableParams" show-filter="true">
+                <thead>
+                    <tr class="slds-text-heading--label">
+                        <th ng-repeat="column in columns"
+                            ng-show="column.visible"
+                            class="slds-is-sortable slds-is-resizable text-center sortable"
+                            ng-class="{
+                                'sort-asc': tableParams.isSortBy(column.field, 'asc'),
+                                'sort-desc': tableParams.isSortBy(column.field, 'desc')
+                              }"
+                            ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
+                            {{column.title}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="user in $data" ng-class-odd="'odd'" ng-class-even="'even'">
+                      <td ng-repeat="column in columns" ng-show="column.visible" sortable="column.field">
+                          {{user[column.field]}}
+                      </td>
+                  </tr>
               </tbody>
             </table>
           </div>
@@ -236,11 +455,11 @@
           }
  
           var calculatePriority = function(numLinesCov, numLinesUncov) {
-          return numLinesUncov*(1 + 0.7-(numLinesCov/(numLinesCov+numLinesUncov)));
+          return parseFloat((numLinesUncov*(1 + 0.7-(numLinesCov/(numLinesCov+numLinesUncov)))).toFixed(2));
           }
  
           var calculateCov = function(numLinesCov, numLinesUncov) {
-          return numLinesCov+numLinesUncov != 0 ? ((numLinesCov*100)/(numLinesCov+numLinesUncov)).toFixed(2) : 0.00;
+          return parseFloat(numLinesCov+numLinesUncov != 0 ? ((numLinesCov*100)/(numLinesCov+numLinesUncov)).toFixed(2) : 0.00);
           }
  
           var calculateGlobalCoverage = function(data){
@@ -539,7 +758,7 @@
           //   return ((totalLinesCoveredProd + totalLinesCoveredPackaged) / (totalLinesProd + totalLinesPackaged)) * 100;
           // }
           ////////END METHOD COVERAGE PREDICTION CLASSES////////
- 
+ 		
           ////////START METHOD GLOBAL COVERAGE CHART////////
           var retrieveCoverage = function(){
             return new Promise(function(resolve,reject){
@@ -554,7 +773,7 @@
                   data.push({'ApexClassOrTriggerName' : coverage.ApexClassOrTrigger.Name,
                     'NumLinesCovered' : coverage.NumLinesCovered,
                     'NumLinesUncovered' : coverage.NumLinesUncovered,
-                   'Coverage' : calculateCov(coverage.NumLinesCovered,coverage.NumLinesUncovered),
+                    'Coverage' : calculateCov(coverage.NumLinesCovered,coverage.NumLinesUncovered),
                     'Priority' : calculatePriority(coverage.NumLinesCovered,coverage.NumLinesUncovered)});
                 }
                 data.sort(sortClassPriority);
